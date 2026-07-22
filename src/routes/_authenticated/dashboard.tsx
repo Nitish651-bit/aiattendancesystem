@@ -119,7 +119,8 @@ function TeacherDashboard({ userId, orgId }: { userId: string; orgId: string }) 
         .eq("organization_id", orgId)
         .maybeSingle();
       if (!teacher) return { classesToday: 0, pendingLeaves: 0 };
-      const day = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date().getDay()];
+      const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
+      const day = days[new Date().getDay()];
       const [classesToday, pendingLeaves] = await Promise.all([
         supabase
           .from("timetables")
