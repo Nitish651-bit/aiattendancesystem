@@ -23,12 +23,12 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Sentinel AI — Enterprise Face Attendance",
+        content: "Sentinel AI — Enterprise Face Attendance for Schools & Companies",
       },
       {
         property: "og:description",
         content:
-          "Face attendance done right. Liveness, geofence, RBAC, real reports.",
+          "Multi-tenant AI face attendance with liveness detection, timetable-aware auto-marking, and role-based dashboards for students, teachers, and admins.",
       },
     ],
   }),

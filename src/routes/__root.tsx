@@ -76,21 +76,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sentinel AI — Enterprise Face Attendance" },
+      { title: "Sentinel AI — Enterprise Face Attendance for Schools & Companies" },
       {
         name: "description",
         content:
-          "Sentinel AI is a multi-tenant, AI-powered face attendance platform for schools, colleges, and enterprises. Liveness detection, timetable-aware auto-marking, real-time analytics.",
+          "Multi-tenant AI face attendance with liveness detection, timetable-aware auto-marking, and role-based dashboards for students, teachers, and admins.",
       },
       { name: "author", content: "Sentinel AI" },
-      { property: "og:title", content: "Sentinel AI — Enterprise Face Attendance" },
+      { property: "og:title", content: "Sentinel AI — Enterprise Face Attendance for Schools & Companies" },
       {
         property: "og:description",
         content:
-          "Multi-tenant AI face attendance with liveness detection, RBAC dashboards, and enterprise reporting.",
+          "Multi-tenant AI face attendance with liveness detection, timetable-aware auto-marking, and role-based dashboards for students, teachers, and admins.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Sentinel AI — Enterprise Face Attendance for Schools & Companies" },
+      { name: "twitter:description", content: "Multi-tenant AI face attendance with liveness detection, timetable-aware auto-marking, and role-based dashboards for students, teachers, and admins." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4b5b5cd8-4952-4cef-9103-5ba63c8bdee4/id-preview-bba8c390--52dd340e-3c7f-4579-9bde-5eb23b94a49e.lovable.app-1784733490848.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4b5b5cd8-4952-4cef-9103-5ba63c8bdee4/id-preview-bba8c390--52dd340e-3c7f-4579-9bde-5eb23b94a49e.lovable.app-1784733490848.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
