@@ -13,11 +13,12 @@ interface Props {
 
 export function AuthedLayout({ children, requireRoles }: Props) {
   const { user, loading } = useSession();
-  const { data: memberships, isLoading: mLoading } = useMemberships(user?.id);
+  const { data: memberships, isLoading: mLoading, error: mError } = useMemberships(user?.id);
   const active = useActiveOrg(memberships);
 
-  if (loading || mLoading) return <FullScreenLoader />;
+  if (loading || (user && mLoading)) return <FullScreenLoader />;
   if (!user) return <Navigate to="/auth" replace />;
+  if (mError) return <ErrorScreen title="Couldn't load your workspace" message={mError.message} />;
   if (!memberships || memberships.length === 0 || !active) {
     return <NoOrgScreen />;
   }
@@ -75,6 +76,23 @@ function ForbiddenScreen({ role }: { role: AppRole }) {
         <p className="mt-2 text-muted-foreground">
           Your role ({role}) doesn't have access to this page.
         </p>
+      </div>
+    </div>
+  );
+}
+
+function ErrorScreen({ title, message }: { title: string; message: string }) {
+  return (
+    <div className="grid min-h-screen place-items-center bg-background px-6">
+      <div className="max-w-lg text-center">
+        <h1 className="text-2xl font-bold text-destructive">{title}</h1>
+        <p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">{message}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          Retry
+        </button>
       </div>
     </div>
   );
