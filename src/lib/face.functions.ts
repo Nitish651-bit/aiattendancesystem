@@ -37,6 +37,8 @@ const markSchema = z.object({
 
 export type LivenessResult = z.infer<typeof livenessSchema>;
 
+type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+
 function euclidean(a: number[], b: number[]) {
   let s = 0;
   for (let i = 0; i < a.length; i++) s += (a[i] - b[i]) ** 2;
