@@ -37,6 +37,8 @@ const markSchema = z.object({
 
 export type LivenessResult = z.infer<typeof livenessSchema>;
 
+type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+
 function euclidean(a: number[], b: number[]) {
   let s = 0;
   for (let i = 0; i < a.length; i++) s += (a[i] - b[i]) ** 2;
@@ -325,7 +327,7 @@ export const markAttendanceByFace = createServerFn({ method: "POST" })
       .from("timetables")
       .select("id, subject_id, start_time, end_time, room, latitude, longitude, radius_meters, subject:subjects(name)")
       .eq("organization_id", data.organizationId)
-      .eq("day_of_week", weekday)
+      .eq("day_of_week", weekday as Weekday)
       .is("deleted_at", null);
     if (slErr) throw new Error(slErr.message);
 
