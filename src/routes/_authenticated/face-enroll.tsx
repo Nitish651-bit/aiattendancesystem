@@ -64,6 +64,28 @@ function EnrollBody({ orgId, userId }: { orgId: string; userId: string }) {
     },
   });
 
+  const remove = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("face_embeddings")
+        .delete()
+        .eq("organization_id", orgId)
+        .eq("user_id", userId);
+      if (error) throw error;
+      await logAudit({
+        orgId,
+        actorId: userId,
+        action: "face.delete",
+        entity: "face_embeddings",
+      });
+    },
+    onSuccess: () => {
+      toast.success("Face template deleted");
+      qc.invalidateQueries({ queryKey: ["face-template", orgId, userId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   return (
     <div className="space-y-6">
       <PageHeader
