@@ -128,6 +128,22 @@ function EnrollBody({ orgId, userId }: { orgId: string; userId: string }) {
                   <dt className="text-muted-foreground">Model</dt>
                   <dd className="truncate">{existing.data.model}</dd>
                 </div>
+                <div className="flex flex-col gap-2 pt-2">
+                  <Button asChild variant="outline" size="sm">
+                    <Link to="/attendance">
+                      <ScanFace className="mr-2 h-4 w-4" aria-hidden /> Go to face check-in
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                    disabled={remove.isPending}
+                    onClick={() => remove.mutate()}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" aria-hidden /> Delete template
+                  </Button>
+                </div>
               </dl>
             ) : (
               <p className="mt-2 text-sm text-muted-foreground">
