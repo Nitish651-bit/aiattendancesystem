@@ -1,14 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Trash2, ScanFace } from "lucide-react";
 import { toast } from "sonner";
 
 import { AuthedLayout } from "@/components/authed-layout";
 import { PageHeader } from "@/components/data-states";
 import { FaceCapture, type CapturePayload } from "@/components/face-capture";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { logAudit } from "@/lib/audit";
 import { enrollFace } from "@/lib/face.functions";
 
 export const Route = createFileRoute("/_authenticated/face-enroll")({
