@@ -1,14 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Trash2, ScanFace } from "lucide-react";
 import { toast } from "sonner";
 
 import { AuthedLayout } from "@/components/authed-layout";
 import { PageHeader } from "@/components/data-states";
 import { FaceCapture, type CapturePayload } from "@/components/face-capture";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { logAudit } from "@/lib/audit";
 import { enrollFace } from "@/lib/face.functions";
 
 export const Route = createFileRoute("/_authenticated/face-enroll")({
@@ -62,6 +64,28 @@ function EnrollBody({ orgId, userId }: { orgId: string; userId: string }) {
     },
   });
 
+  const remove = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("face_embeddings")
+        .delete()
+        .eq("organization_id", orgId)
+        .eq("user_id", userId);
+      if (error) throw error;
+      await logAudit({
+        orgId,
+        actorId: userId,
+        action: "face.delete",
+        entity: "face_embeddings",
+      });
+    },
+    onSuccess: () => {
+      toast.success("Face template deleted");
+      qc.invalidateQueries({ queryKey: ["face-template", orgId, userId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -103,6 +127,22 @@ function EnrollBody({ orgId, userId }: { orgId: string; userId: string }) {
                 <div className="flex justify-between gap-4">
                   <dt className="text-muted-foreground">Model</dt>
                   <dd className="truncate">{existing.data.model}</dd>
+                </div>
+                <div className="flex flex-col gap-2 pt-2">
+                  <Button asChild variant="outline" size="sm">
+                    <Link to="/attendance">
+                      <ScanFace className="mr-2 h-4 w-4" aria-hidden /> Go to face check-in
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                    disabled={remove.isPending}
+                    onClick={() => remove.mutate()}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" aria-hidden /> Delete template
+                  </Button>
                 </div>
               </dl>
             ) : (
