@@ -280,7 +280,7 @@ export const markAttendanceByFace = createServerFn({ method: "POST" })
       });
     }
 
-    const { data: student, error: stErr } = await supabaseAdmin
+    const { data: existingStudent, error: stErr } = await supabaseAdmin
       .from("students")
       .select("id, roll_number")
       .eq("organization_id", data.organizationId)
@@ -288,7 +288,34 @@ export const markAttendanceByFace = createServerFn({ method: "POST" })
       .is("deleted_at", null)
       .maybeSingle();
     if (stErr) throw new Error(stErr.message);
-    if (!student) throw new Error("No active student record found for your account.");
+
+    let student = existingStudent;
+    if (!student) {
+      // Any active member checking in without a student record gets one provisioned
+      // so their attendance is stored against a real row instead of failing.
+      const rollNumber = `AUTO-${context.userId.slice(0, 8).toUpperCase()}`;
+      const { data: created, error: createErr } = await supabaseAdmin
+        .from("students")
+        .insert({
+          organization_id: data.organizationId,
+          user_id: context.userId,
+          roll_number: rollNumber,
+          admission_year: new Date().getFullYear(),
+        })
+        .select("id, roll_number")
+        .single();
+      if (createErr) throw new Error(createErr.message);
+      student = created;
+      await supabaseAdmin.from("audit_logs").insert({
+        organization_id: data.organizationId,
+        actor_id: context.userId,
+        action: "student.auto_provision",
+        entity: "students",
+        entity_id: created.id,
+        ip_address: ip,
+        metadata: { roll_number: rollNumber } as never,
+      });
+    }
 
     const { data: templates, error: tErr } = await supabaseAdmin
       .from("face_embeddings")
