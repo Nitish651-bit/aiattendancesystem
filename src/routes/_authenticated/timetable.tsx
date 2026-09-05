@@ -91,6 +91,7 @@ const schema = z
 
 function TimetableBody({ orgId, userId, role }: { orgId: string; userId: string; role: string }) {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const canManage = role === "admin" || role === "super_admin";
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Slot | null>(null);
