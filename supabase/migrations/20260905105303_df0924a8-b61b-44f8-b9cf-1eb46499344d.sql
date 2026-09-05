@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.tg_notify_guardians_on_attendance() FROM PUBLIC, anon, authenticated;
