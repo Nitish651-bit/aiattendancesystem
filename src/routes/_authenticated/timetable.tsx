@@ -257,7 +257,16 @@ function TimetableBody({ orgId, userId, role }: { orgId: string; userId: string;
         subtitle="Attendance can only be marked inside a scheduled class window."
         action={
           canManage ? (
-            <Button onClick={() => openForm(null)} disabled={(subjects.data ?? []).length === 0}>
+            <Button
+              onClick={() => {
+                if ((subjects.data ?? []).length === 0) {
+                  toast.error("Add a subject first, then schedule a class.");
+                  void navigate({ to: "/subjects" });
+                  return;
+                }
+                openForm(null);
+              }}
+            >
               <Plus className="mr-2 h-4 w-4" aria-hidden /> Schedule class
             </Button>
           ) : undefined
